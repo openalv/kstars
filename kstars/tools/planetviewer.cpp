@@ -122,6 +122,14 @@ PlanetViewer::PlanetViewer(QWidget *parent) : QDialog(parent), scale(1.0), isClo
     connect(this, SIGNAL(closeClicked()), SLOT(slotCloseWindow()));
 }
 
+
+PlanetViewerUI::~PlanerViewer(){
+
+    qDeleteAll(PlanetList);
+    PlanetList.clear();
+}
+
+
 QString PlanetViewer::planetName(uint i) const
 {
     return PlanetList[i]->name();

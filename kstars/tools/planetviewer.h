@@ -50,6 +50,7 @@ class PlanetViewer : public QDialog
 
   public:
     explicit PlanetViewer(QWidget *parent = nullptr);
+    virtual ~PlanetViewer();
 
     inline QString centerPlanet() const { return CenterPlanet; }
     inline void setCenterPlanet(const QString &cp) { CenterPlanet = cp; }

@@ -1169,15 +1169,18 @@ void AltVsTime::drawGradient()
 
     gradient = new QPixmap(avtUI->View->rect().width(), avtUI->View->rect().height());
 
-    QPainter p;
+    
+    QPainter *p;
+    p = new QPainter;
+    //QPainter p;
 
-    p.begin(gradient);
+    p->begin(gradient);
     KPlotWidget *kPW = new KPlotWidget;
-    p.setRenderHint(QPainter::Antialiasing, kPW->antialiasing());
-    p.fillRect(gradient->rect(), kPW->backgroundColor());
+    p->setRenderHint(QPainter::Antialiasing, kPW->antialiasing());
+    p->fillRect(gradient->rect(), kPW->backgroundColor());
 
-    p.setClipRect(gradient->rect());
-    p.setClipping(true);
+    p->setClipRect(gradient->rect());
+    p->setClipping(true);
 
     int pW = gradient->rect().width();
     int pH = gradient->rect().height();
@@ -1208,26 +1211,26 @@ void AltVsTime::drawGradient()
                 QLinearGradient(QPointF(moonset - fadewidth, 0.0), QPointF(moonset + fadewidth, 0.0));
             grad.setColorAt(0, MoonColor);
             grad.setColorAt(1, Qt::transparent);
-            p.fillRect(QRectF(0.0, 0.0, moonset + fadewidth, pH),
+            p->fillRect(QRectF(0.0, 0.0, moonset + fadewidth, pH),
                        grad); // gradient should be padded until moonset - fadewidth (see QLinearGradient docs)
             grad.setStart(QPointF(moonrise + fadewidth, 0.0));
             grad.setFinalStop(QPointF(moonrise - fadewidth, 0.0));
-            p.fillRect(QRectF(moonrise - fadewidth, 0.0, pW - moonrise + fadewidth, pH), grad);
+            p->fillRect(QRectF(moonrise - fadewidth, 0.0, pW - moonrise + fadewidth, pH), grad);
         }
         else
         {
-            qreal opacity = p.opacity();
-            p.setOpacity(opacity / 4);
-            p.fillRect(QRectF(moonrise + fadewidth, 0.0, moonset - moonrise - 2 * fadewidth, pH), MoonColor);
+            qreal opacity = p->opacity();
+            p->setOpacity(opacity / 4);
+            p->fillRect(QRectF(moonrise + fadewidth, 0.0, moonset - moonrise - 2 * fadewidth, pH), MoonColor);
             QLinearGradient grad =
                 QLinearGradient(QPointF(moonrise + fadewidth, 0.0), QPointF(moonrise - fadewidth, 0.0));
             grad.setColorAt(0, MoonColor);
             grad.setColorAt(1, Qt::transparent);
-            p.fillRect(QRectF(0.0, 0.0, moonrise + fadewidth, pH), grad);
+            p->fillRect(QRectF(0.0, 0.0, moonrise + fadewidth, pH), grad);
             grad.setStart(QPointF(moonset - fadewidth, 0.0));
             grad.setFinalStop(QPointF(moonset + fadewidth, 0.0));
-            p.fillRect(QRectF(moonset - fadewidth, 0.0, pW - moonset, pH), grad);
-            p.setOpacity(opacity);
+            p->fillRect(QRectF(moonset - fadewidth, 0.0, pW - moonset, pH), grad);
+            p->setOpacity(opacity);
         }
     }
 
@@ -1243,7 +1246,7 @@ void AltVsTime::drawGradient()
         if (SunMinAlt > 0.0)
         {
             // The sun never set and the sky is always blue
-            p.fillRect(rect(), SkyColor);
+            p->fillRect(rect(), SkyColor);
         }
         else if (SunMaxAlt < 0.0 && SunMinAlt < -18.0)
         {
@@ -1255,10 +1258,10 @@ void AltVsTime::drawGradient()
 
             grad.setColorAt(0, gradStartColor);
             grad.setColorAt(1, Qt::transparent);
-            p.fillRect(QRectF(0.0, 0.0, du, pH), grad);
+            p->fillRect(QRectF(0.0, 0.0, du, pH), grad);
             grad.setStart(QPointF(pW, 0.0));
             grad.setFinalStop(QPointF(da, 0.0));
-            p.fillRect(QRectF(da, 0.0, pW, pH), grad);
+            p->fillRect(QRectF(da, 0.0, pW, pH), grad);
         }
         else if (SunMaxAlt < 0.0 && SunMinAlt > -18.0)
         {
@@ -1273,13 +1276,13 @@ void AltVsTime::drawGradient()
             grad.setColorAt(0, gradStartEndColor);
             grad.setColorAt(0.5, gradMidColor);
             grad.setColorAt(1, gradStartEndColor);
-            p.fillRect(QRectF(0.0, 0.0, pW, pH), grad);
+            p->fillRect(QRectF(0.0, 0.0, pW, pH), grad);
         }
         else if (Dawn < 0.0)
         {
             // The sun sets and rises but the sky is never completely dark
-            p.fillRect(0, 0, set, int(0.5 * pH), SkyColor);
-            p.fillRect(rise, 0, pW, int(0.5 * pH), SkyColor);
+            p->fillRect(0, 0, set, int(0.5 * pH), SkyColor);
+            p->fillRect(rise, 0, pW, int(0.5 * pH), SkyColor);
 
             QLinearGradient grad = QLinearGradient(QPointF(set, 0.0), QPointF(rise, 0.0));
 
@@ -1289,29 +1292,29 @@ void AltVsTime::drawGradient()
             grad.setColorAt(0, SkyColor);
             grad.setColorAt(0.5, gradMidColor);
             grad.setColorAt(1, SkyColor);
-            p.fillRect(QRectF(set, 0.0, rise - set, pH), grad);
+            p->fillRect(QRectF(set, 0.0, rise - set, pH), grad);
         }
         else
         {
-            p.fillRect(0, 0, set, pH, SkyColor);
-            p.fillRect(rise, 0, pW, pH, SkyColor);
+            p->fillRect(0, 0, set, pH, SkyColor);
+            p->fillRect(rise, 0, pW, pH, SkyColor);
 
             QLinearGradient grad = QLinearGradient(QPointF(set, 0.0), QPointF(du, 0.0));
             grad.setColorAt(0, SkyColor);
             grad.setColorAt(
                 1,
                 Qt::transparent); // FIXME?: The sky appears black well before the actual end of twilight if the gradient is too slow (eg: latitudes above arctic circle)
-            p.fillRect(QRectF(set, 0.0, du - set, pH), grad);
+            p->fillRect(QRectF(set, 0.0, du - set, pH), grad);
 
             grad.setStart(QPointF(rise, 0.0));
             grad.setFinalStop(QPointF(da, 0.0));
-            p.fillRect(QRectF(da, 0.0, rise - da, pH), grad);
+            p->fillRect(QRectF(da, 0.0, rise - da, pH), grad);
         }
     }
 
-    p.fillRect(0, int(0.5 * pH), pW, int(0.5 * pH), KStarsData::Instance()->colorScheme()->colorNamed("HorzColor"));
+    p->fillRect(0, int(0.5 * pH), pW, int(0.5 * pH), KStarsData::Instance()->colorScheme()->colorNamed("HorzColor"));
 
-    p.setClipping(false);
+    p->setClipping(false);
 
     // Add vertical line indicating "now"
     // Convert the current system clock time to the TZ corresponding to geo
@@ -1324,21 +1327,24 @@ void AltVsTime::drawGradient()
     // Convert to screen pixel coords
     int ix = int(x * pW / 24.0);
 
-    p.setPen(QPen(QBrush("white"), 2.0, Qt::DotLine));
-    p.drawLine(ix, 0, ix, pH);
+    p->setPen(QPen(QBrush("white"), 2.0, Qt::DotLine));
+    p->drawLine(ix, 0, ix, pH);
 
-    QFont largeFont = p.font();
+    QFont largeFont = p->font();
 
     largeFont.setPointSize(largeFont.pointSize() + 1);
     // Label this vertical line with the current time
-    p.save();
-    p.setFont(largeFont);
-    p.translate(ix + 15, pH - 20);
-    p.rotate(-90);
+    p->save();
+    p->setFont(largeFont);
+    p->translate(ix + 15, pH - 20);
+    p->rotate(-90);
     // Short format necessary to avoid false time-zone labeling
-    p.drawText(0, 0, QLocale().toString(t, QLocale::ShortFormat));
-    p.restore();
-    p.end();
+    p->drawText(0, 0, QLocale().toString(t, QLocale::ShortFormat));
+    p->restore();
+    p->end();
+
+    delete kPW; // Deleting the pointer to the KPlotWidget.
+    delete p;
 }
 
 KStarsDateTime AltVsTime::getDate()

@@ -40,7 +40,7 @@ class TrailObject : public SkyObject
     /** Constructor */
     TrailObject(int t, double r, double d, float m = 0.0, const QString &n = QString());
 
-    ~TrailObject() override;
+    virtual ~TrailObject() override;
 
     TrailObject *clone() const override;
 
